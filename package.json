@@ -1,0 +1,91 @@
+{
+  "name": "aws-bnr-blueprint-arbitrum",
+  "version": "2.0.0",
+  "description": "Arbitrum node runner — Arbitrum One (chainId 42161), Arbitrum Nova (42170) and Arbitrum Sepolia (421614) full nodes running the offchainlabs/nitro-node client via Docker",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karimakacem/aws-bnr-blueprint-arbitrum.git"
+  },
+  "homepage": "https://github.com/karimakacem/aws-bnr-blueprint-arbitrum#readme",
+  "bugs": {
+    "url": "https://github.com/karimakacem/aws-bnr-blueprint-arbitrum/issues"
+  },
+  "keywords": ["aws-blockchain-node-runners", "aws-bnr-blueprint", "arbitrum", "nitro", "nova"],
+  "files": ["configurations/", "samples/", "user-data/", "README.md", "LICENSE"],
+  "engines": {
+    "aws-blockchain-node-runners": ">=2.0.0"
+  },
+  "peerDependencies": {
+    "aws-blockchain-node-runners": ">=2.0.0"
+  },
+  "aws-blockchain-node-runner": {
+    "BLOCKCHAIN_PROTOCOL": "arbitrum",
+    "supportedDeploymentModes": [
+      "single-node",
+      "ha-nodes"
+    ],
+    "defaultConfiguration": "nitro-v3.12.1-full.yml",
+    "availableConfigurations": [
+      {
+        "name": "nitro-v3.12.1-full.yml",
+        "version": "v3.12.1-70fa99a"
+      }
+    ],
+    "BC_NETWORKS": [
+      "mainnet",
+      "nova",
+      "testnet"
+    ],
+    "defaultInstanceTypes": {
+      "x86_64": "r6i.2xlarge",
+      "ARM_64": "r7g.2xlarge"
+    },
+    "requiredPorts": [
+      {
+        "port": 8547,
+        "protocol": "tcp",
+        "description": "Nitro JSON RPC",
+        "public": false
+      },
+      {
+        "port": 8548,
+        "protocol": "tcp",
+        "description": "Nitro WebSocket",
+        "public": false
+      },
+      {
+        "port": 6070,
+        "protocol": "tcp",
+        "description": "Nitro metrics endpoint",
+        "public": false
+      }
+    ],
+    "monitoring": {
+      "healthCheckPath": "/",
+      "metricsPort": 6070,
+      "clientNames": ["Nitro"]
+    },
+    "storage": {
+      "defaultDataVolumes": [
+        {
+          "name": "data",
+          "sizeGiB": 5500,
+          "type": "gp3",
+          "iops": 16000,
+          "throughput": 1000,
+          "mountPath": "/data",
+          "fileSystem": "ext4"
+        }
+      ]
+    },
+    "snapshot": {
+      "enabled": false
+    },
+    "customEnvVarsNamePrefix": "ARBITRUM",
+    "customEnvVars": [
+      "ARBITRUM_L1_RPC_URL=https://your-ethereum-l1-rpc-url",
+      "ARBITRUM_L1_BEACON_URL=https://your-ethereum-l1-beacon-url"
+    ]
+  }
+}

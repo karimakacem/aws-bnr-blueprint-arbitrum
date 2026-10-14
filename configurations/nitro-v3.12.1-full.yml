@@ -1,0 +1,49 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+# Arbitrum — Arbitrum Nitro Full Node (One / Nova / Sepolia)
+#
+# The node runs as a single offchainlabs/nitro-node Docker container.
+# This file is a CONFIGURATION MARKER: it pins the Nitro image and the
+# per-network chain id / feed / sequencer values that node.sh consumes as the
+# single source of truth. node.sh reads these keys with grep/sed and branches
+# on BC_NETWORK (mainnet | nova | testnet) — see
+# blueprints/arbitrum/user-data/node.sh.
+#
+# Arbitrum One, Nova and Sepolia are built into Nitro (cmd/chaininfo), so
+# --chain.id is enough to load the chain config, rollup addresses, secondary
+# feeds and (Nova) the AnyTrust DAS list. No chain-info or genesis download is
+# needed. The feed and sequencer values below match Nitro's built-in chain
+# info; they are passed explicitly so the node's upstreams are visible here.
+#
+# SECURITY: nitro_image MUST be a specific immutable tag (never "latest"),
+# because node.sh pulls and runs it as a service at boot. Bump via the
+# @version-update workflow.
+#
+# Recommended version: https://docs.arbitrum.io/run-a-node/start-here#recommended-nitro-version
+# Release notes:       https://github.com/OffchainLabs/nitro/releases/tag/v3.12.1
+# Image tags:          https://hub.docker.com/r/offchainlabs/nitro-node/tags
+
+nitro_image: "offchainlabs/nitro-node:v3.12.1-70fa99a"
+
+# RPC/WS API namespaces exposed by the node
+http_api: "net,web3,eth,arb"
+ws_api: "net,web3,eth,arb"
+
+# --- Arbitrum One (BC_NETWORK=mainnet, chainId 42161, parent = Ethereum mainnet) ---
+mainnet_chain_id: "42161"
+mainnet_feed_url: "wss://arb1-feed.arbitrum.io/feed"
+# Non-sequencing full node forwards eth_sendRawTransaction here.
+mainnet_sequencer_url: "https://arb1-sequencer.arbitrum.io/rpc"
+
+# --- Arbitrum Nova (BC_NETWORK=nova, chainId 42170, parent = Ethereum mainnet) ---
+# AnyTrust chain: Nitro enables the DAS REST aggregator from its built-in
+# chain info (https://nova.arbitrum.io/das-servers).
+nova_chain_id: "42170"
+nova_feed_url: "wss://nova-feed.arbitrum.io/feed"
+nova_sequencer_url: "https://nova.arbitrum.io/rpc"
+
+# --- Arbitrum Sepolia (BC_NETWORK=testnet, chainId 421614, parent = Ethereum Sepolia) ---
+testnet_chain_id: "421614"
+testnet_feed_url: "wss://sepolia-rollup.arbitrum.io/feed"
+testnet_sequencer_url: "https://sepolia-rollup-sequencer.arbitrum.io/rpc"
